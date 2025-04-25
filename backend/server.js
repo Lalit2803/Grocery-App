@@ -35,6 +35,9 @@ app.use("/lps/cart",cartRoutes)
 app.use("/lps/address",addressRoutes)
 app.use("/lps/order",orderRoutes)
 
+app.get("/", (req, res) => {
+  res.send("🚀 Grocery API is working!");
+});
 
 app.use(error)
 app.listen(PORT,(err)=>{
