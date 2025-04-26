@@ -2,6 +2,7 @@ const userModel=require("../models/User");
 const asyncHandler = require("express-async-handler");
 const ErrorHandler = require("../utils/errorHandler");
 const { generateToken } = require("../utils/jwt");
+const { NODE_ENV } = require("../config");
 
 
 // register user  /lps/user/register
@@ -17,7 +18,14 @@ exports.register=asyncHandler(async(req,res)=>{
     }
     let user=await userModel.create({name,email,password});
     const token= await generateToken(user._id);
-    res.cookie("token",token,{maxAge:1*60*60*1000,httpOnly:true})
+    res.cookie("token",token,{
+        httpOnly:true, // prevent javascript to access cookie
+        secure:NODE_ENV==='production', // use secure cookie in production
+        sameSite:NODE_ENV==="production" ? "none":"strict",// CSRF protection
+        maxAge:7*24*60*60*1000,
+
+    
+    })
 
     res.status(200).json({success:true,message:"User Registered successfully",user})
 })
@@ -35,14 +43,24 @@ exports.login=asyncHandler(async(req,res)=>{
         throw new ErrorHandler(409,"Incorrect Password");
     }
     const token= await generateToken(existUser._id);
-    res.cookie("token",token,{maxAge:1*60*60*1000,httpOnly:true})
+    res.cookie("token",token,{
+        httpOnly:true, // prevent javascript to access cookie
+        secure:NODE_ENV==='production', // use secure cookie in production
+        sameSite:NODE_ENV==="production" ? "none":"strict",// CSRF protection
+        maxAge:7*24*60*60*1000,
+    })
 
     res.status(200).json({success:true,message:"User Login successfully",existUser})
 
 })
 
 exports.logOutUser=asyncHandler(async(req,res)=>{
-    res.clearCookie("token","",{maxAge:0});
+    res.clearCookie("token",{
+        httpOnly:true, // prevent javascript to access cookie
+        secure:NODE_ENV==='production', // use secure cookie in production
+        sameSite:NODE_ENV==="production" ? "none":"strict",// CSRF protection
+        
+    });
     
 res.status(200).json({ success: true, message: "user logged out" });
     

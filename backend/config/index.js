@@ -4,6 +4,7 @@ module.exports={
     MONGO_URL:process.env.MONGO_URL,
     JWT_SECRET:process.env.JWT_SECRET,
     JWT_SECRET_SELLER:process.env.JWT_SECRET_SELLER,
+    NODE_ENV:process.env.NODE_ENV,
     SELLER_EMAIL:process.env.SELLER_EMAIL,
     SELLER_PASSWORD:process.env.SELLER_PASSWORD,
 

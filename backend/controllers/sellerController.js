@@ -2,7 +2,7 @@
 const asyncHandler = require("express-async-handler");
 const ErrorHandler = require("../utils/errorHandler");
 const { generateTokenSeller } = require("../utils/jwt");
-const { SELLER_EMAIL, SELLER_PASSWORD } = require("../config");
+const { SELLER_EMAIL, SELLER_PASSWORD, NODE_ENV } = require("../config");
 
 // ✅ Seller Login
 exports.sellerLogin = asyncHandler(async (req, res) => {
@@ -18,7 +18,7 @@ exports.sellerLogin = asyncHandler(async (req, res) => {
     res.cookie("sellerToken", token, {
       maxAge: 1 * 60 * 60 * 1000, // 1 hour
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // only secure in prod
+      secure: NODE_ENV === "production", // only secure in prod
       sameSite: "strict",
     });
 
@@ -44,7 +44,11 @@ exports.isSellerAuth = asyncHandler(async (req, res) => {
 
 // ✅ Seller Logout
 exports.sellerLogout = asyncHandler(async (req, res) => {
-  res.clearCookie("sellerToken","",{maxAge:0});
+  res.clearCookie("sellerToken",{
+     httpOnly:true, // prevent javascript to access cookie
+            secure:NODE_ENV==='production', // use secure cookie in production
+            sameSite:NODE_ENV==="production" ? "none":"strict",// CSRF protection
+  });
 
   res.status(200).json({success: true,message: "Seller logged out successfully",});
 });
