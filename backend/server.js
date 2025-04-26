@@ -25,8 +25,14 @@ app.post('/stripe',express.raw({type:'application/json'},stripeWebhook))
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: allowedOrigins,
-    credentials: true
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
   }))
 app.use("/lps/user",userRoutes)
 app.use("/lps/seller",sellerRoutes)
