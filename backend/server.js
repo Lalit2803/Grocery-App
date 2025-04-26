@@ -16,7 +16,8 @@ const { stripeWebhook } = require("./controllers/order.controller");
 connectDB();
 const app=express();
 //allowed multiple origins
-const allowedOrigins=["http://localhost:5173"]
+const allowedOrigins=[ "http://localhost:5173",
+  "https://grocery-app-i1ef.onrender.com"]
 
 app.post('/stripe',express.raw({type:'application/json'},stripeWebhook))
 
