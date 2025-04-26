@@ -16,7 +16,7 @@ const { stripeWebhook } = require("./controllers/order.controller");
 connectDB();
 const app=express();
 //allowed multiple origins
-// const allowedOrigins=["http://localhost:5173"]
+const allowedOrigins=["http://localhost:5173"]
 
 app.post('/stripe',express.raw({type:'application/json'},stripeWebhook))
 
@@ -25,9 +25,9 @@ app.post('/stripe',express.raw({type:'application/json'},stripeWebhook))
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: "http://localhost:5173", // Make sure this matches your frontend origin
-  credentials: true,
-}));
+    origin: allowedOrigins,
+    credentials: true
+  }))
 app.use("/lps/user",userRoutes)
 app.use("/lps/seller",sellerRoutes)
 app.use("/lps/products",productRoutes)
