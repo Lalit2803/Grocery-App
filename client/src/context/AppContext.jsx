@@ -4,7 +4,8 @@ import { dummyProducts } from "../assets/assets";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-axios.defaults.withCredentials=true;
+axios.defaults.withCredentials = true;
+
 axios.defaults.baseURL=import.meta.env.VITE_BACKEND_URL;
 // create cotext
 export const AppContext=createContext();
@@ -26,36 +27,43 @@ export const AppContextProvider=({children})=>{
     const[searchQuery,setSearchQuery]=useState([]);
 
     // fetch seller status
-    const fetchSeller=async(req,res)=>{
+    const fetchSeller = async () => {
         try {
-            const {data}=await axios.get('/lps/seller/getcurrentseller');
-            if(data.success){
-                setIsSeller(true)
-            }else{
-                setIsSeller(false)
-
+            const { data } = await axios.get('/lps/seller/getcurrentseller');
+            if (data.success) {
+                setIsSeller(true);
+            } else {
+                setIsSeller(false);
             }
-            
         } catch (error) {
-            setIsSeller(false)
-            
+            setIsSeller(false);
+            if (error.response && error.response.status === 401) {
+                console.log('Seller not authorized');
+            } else {
+                toast.error(error.message);
+            }
         }
-    }
+    };
 
     // fetch user auth status, user data and cart items
-    const fetchUser=async(req,res)=>{
+    const fetchUser = async () => {
         try {
-            const {data}=await axios.get('/lps/user/getcurrentuser');
-            if(data.success){
+            const { data } = await axios.get('/lps/user/getcurrentuser');
+            if (data.success) {
                 setUser(data.user);
-                setCartItems(data.user.cartItems)
+                setCartItems(data.user.cartItems || {});
+            } else {
+                setUser(null);
             }
-            
         } catch (error) {
-            setUser(null)
-            
+            setUser(null);
+            if (error.response && error.response.status === 401) {
+                console.log('User not authorized');
+            } else {
+                toast.error(error.message);
+            }
         }
-    }
+    };
 
     // to fetch all product
     const fetchProducts=async()=>{
