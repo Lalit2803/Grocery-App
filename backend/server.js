@@ -16,8 +16,10 @@ const { stripeWebhook } = require("./controllers/order.controller");
 connectDB();
 const app=express();
 //allowed multiple origins
-const allowedOrigins=[ "http://localhost:5173",
-  "https://grocery-app-i1ef.onrender.com"]
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://grocery-app-frontend-pb47.onrender.com", // <-- your deployed frontend domain
+];
 
 app.post('/stripe',express.raw({type:'application/json'},stripeWebhook))
 
@@ -25,10 +27,18 @@ app.post('/stripe',express.raw({type:'application/json'},stripeWebhook))
 
 app.use(express.json());
 app.use(cookieParser());
+
+// use function for dynamic CORS
 app.use(cors({
-    origin: allowedOrigins,
-    credentials: true
-  }))
+  origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+      } else {
+          callback(new Error("Not allowed by CORS"));
+      }
+  },
+  credentials: true,
+}));
 app.use("/lps/user",userRoutes)
 app.use("/lps/seller",sellerRoutes)
 app.use("/lps/products",productRoutes)
