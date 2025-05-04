@@ -16,7 +16,7 @@ const BottomBanner = () => {
                 <div>
                 <h3 className='text-lg md:text-xl font-semibold'>{feature.title}</h3>
 
-<p className='text-gray-500/70 text-xs md:text-sm'>{feature.description}</p>
+                <p className='text-gray-500/70 text-xs md:text-sm'>{feature.description}</p>
                 </div>
                 
                 

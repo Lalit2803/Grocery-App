@@ -8,4 +8,13 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    proxy: {
+      '/lps': {
+        target: 'https://grocery-app-i1ef.onrender.com', // or your API host
+        changeOrigin: true,
+        secure: true
+      }
+    }
+  }
 })
